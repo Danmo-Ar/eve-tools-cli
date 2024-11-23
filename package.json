@@ -1,16 +1,27 @@
 {
 	"name": "@eve-tools/cli",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Everest cli to speed up project start-up and standardized frontend , backend architecture",
 	"bin": {
 		"eve": "./cli/cli.js"
 	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"type": "module",
 	"scripts": {
 		"build": "tsc --watch && tsc-alias",
-		"start": "concurrently 'yarn build'  'nodemon --watch . --exec  npm i -g .'"
+		"start": "concurrently 'yarn build'  'nodemon --watch . --exec  npm i -g .'",
+		"prepare": "husky"
 	},
-	"keywords": ["cli", "everest", "boilerplate", "eve", "tools", "nextjs"],
+	"keywords": [
+		"cli",
+		"everest",
+		"boilerplate",
+		"eve",
+		"tools",
+		"nextjs"
+	],
 	"author": "Everest Team",
 	"license": "ISC",
 	"dependencies": {
@@ -30,8 +41,12 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"files": ["cli"],
+	"files": [
+		"cli"
+	],
 	"devDependencies": {
+		"@commitlint/cli": "^19.6.0",
+		"@commitlint/config-conventional": "^19.6.0",
 		"@eslint/js": "^9.8.0",
 		"@types/figlet": "^1.5.6",
 		"@types/inquirer": "^9.0.3",
@@ -39,6 +54,7 @@
 		"concurrently": "^8.0.1",
 		"eslint": "9.x",
 		"globals": "^15.8.0",
+		"husky": "^9.1.7",
 		"typescript": "^5.0.4",
 		"typescript-eslint": "^7.17.0"
 	}

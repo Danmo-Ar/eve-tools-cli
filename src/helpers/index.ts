@@ -1,19 +1,28 @@
 import boxen, { Options } from "boxen";
-import { writeFileSync } from "node:fs";
+import { exec } from "node:child_process";
+
+import { readFileSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path, { normalize } from "node:path";
+import { promisify } from "node:util";
 import ora from "ora";
 
-export const tryCatchWrapper = async (fn: () => Promise<void>) => {
+export type PkgJson = Record<string, string | boolean | number | undefined>;
+export const execAsync = promisify(exec);
+
+export const tryCatchWrapper = async (
+	fn: () => Promise<void>,
+	displayError?: () => void,
+) => {
 	try {
 		await fn();
-	} catch (error) {
-		console.error(error);
+	} catch (error: never) {
+		displayError?.();
+		console.error(error?.message);
 		process.exit(1);
 	}
 };
 
-export type PkgJson = Record<string, string | boolean | number | undefined>;
 
 export const CheckPackageJson = async (cwd: string) => {
 	const spinner = ora("Checking dependencies...");
@@ -66,32 +75,10 @@ export const getAbsolutePath = (projectName: string) => {
 	);
 };
 
-// export const pnpmInstall = async () => {
-// 	const os = type() as "Windows_NT" | "Linux" | "Darwin";
-// 	// check if pnpm is installed
 
-// 	exec("pnpm --version", (error) => {
-// 		if (error) {
-// 			if (os !== "Windows_NT") {
-// 				exec(
-// 					"curl -fsSL https://get.pnpm.io/install.sh | sh -",
-// 					(error, stdout, stderr) => {},
-// 				);
-// 				return;
-// 			}
-// 			exec("npm install -g pnpm", (error) => {
-// 				if (error) {
-// 					console.error("Failed to install pnpm, please install it manually.");
-// 					return;
-// 				}
-// 				console.log("pnpm installed successfully");
-// 			});
-// 		}
-// 	});
-// };
 
-export const getVersion = async () => {
-	const pkg = await readFile(
+export const getVersion =  () => {
+	const pkg =  readFileSync(
 		new URL("../../package.json", import.meta.url),
 		"utf-8",
 	);
