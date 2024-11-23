@@ -1,14 +1,14 @@
 import inquirer from "inquirer";
 
-import { Project } from "../interfaces/Project.js";
+import { Project } from "../interfaces/index.js";
 import prompt from "./prompt-en.js";
 
-const initialPrompt = {
+const initialPrompt: Project = {
 	name: "",
 	type: "",
 	architecture: "",
 	language: "",
-	framework: "",
+	framework: "nextjs",
 };
 
 export const generatePrompts = async () => {

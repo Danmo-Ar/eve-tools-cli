@@ -6,6 +6,7 @@ import { readFile } from "node:fs/promises";
 import path, { normalize } from "node:path";
 import { promisify } from "node:util";
 import ora from "ora";
+import { errorColor, pendingColor } from "../lib/chalk-utility.js";
 
 export type PkgJson = Record<string, string | boolean | number | undefined>;
 export const execAsync = promisify(exec);
@@ -16,16 +17,15 @@ export const tryCatchWrapper = async (
 ) => {
 	try {
 		await fn();
-	} catch (error: never) {
+	} catch (error) {
 		displayError?.();
-		console.error(error?.message);
+		console.error(errorColor((error as Error)?.message));
 		process.exit(1);
 	}
 };
 
-
 export const CheckPackageJson = async (cwd: string) => {
-	const spinner = ora("Checking dependencies...");
+	const spinner = ora(pendingColor("Checking dependencies..."));
 
 	let absolutePkgJsonPath = "";
 	let pkgJson: PkgJson = {};
@@ -75,10 +75,8 @@ export const getAbsolutePath = (projectName: string) => {
 	);
 };
 
-
-
-export const getVersion =  () => {
-	const pkg =  readFileSync(
+export const getVersion = () => {
+	const pkg = readFileSync(
 		new URL("../../package.json", import.meta.url),
 		"utf-8",
 	);
@@ -95,10 +93,4 @@ export const printBoxText = (text: string, options?: Options) => {
 			...options,
 		}),
 	);
-};
-
-export const printObj = (obj: Record<string, any>) => {
-	for (const [key, value] of Object.entries(obj)) {
-		console.log(`${key}: ${value}`);
-	}
 };

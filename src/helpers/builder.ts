@@ -1,4 +1,4 @@
-import type { Project } from "../interfaces/Project.js";
+import type { Project } from "../interfaces/index.js";
 import { initProcess } from "./commands/init.js";
 import { clonningProcess } from "./github.js";
 

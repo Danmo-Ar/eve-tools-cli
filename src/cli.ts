@@ -42,7 +42,7 @@ process.removeAllListeners("warning");
 program
 	.command("init")
 	.description("Initialize a new project")
-	.action(async (args) => {
+	.action(async () => {
 		const { projectMeta } = await generatePrompts();
 		await projectBuilder(projectMeta);
 	});
