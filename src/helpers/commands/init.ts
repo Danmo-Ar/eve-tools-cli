@@ -1,17 +1,23 @@
-import { spawn } from "child_process";
-import inquirer from "inquirer";
-import ora from "ora";
-import { PROJECT_SCRIPT } from "../../constants.js";
+import { PROJECT_SCRIPT } from "../../constants/constants.js";
 import { Project } from "../../interfaces/index.js";
 import {
-	CheckPackageJson,
-	dirName,
 	execAsync,
 	getAbsolutePath,
-	printBoxText,
+	getProperDirName,
+	printTextIntoBox,
 	tryCatchWrapper,
+} from "../../utils/index.js";
+import { spinner } from "../../utils/spinner.js";
+import {
+	CheckPackageJson,
 	updatePackageJson,
-} from "../index.js";
+} from "../manage-package-json/index.js";
+
+import {
+	wantToInstallDepsPrompt,
+	wantToRunProjectPrompt,
+} from "../../prompts/index.js";
+import { runProject } from "../run-project.js";
 
 export const initProcess = async ({
 	name: projectName,
@@ -19,15 +25,11 @@ export const initProcess = async ({
 }: Project) => {
 	// Get the absolute path of the current working directory
 	const absolutePath = getAbsolutePath(projectName);
-	const { shouldInstall } = await inquirer.prompt([
-		{
-			type: "confirm",
-			name: "shouldInstall",
-			message: "Do you want to install dependencies ?",
-		},
-	]); // Ask the user if he wants to install the dependencies
 
-	if (!shouldInstall) return; // If the user doesn't want to install the dependencies, return
+	// Ask the user if he wants to install the dependencies
+	const { wantToInstall } = await wantToInstallDepsPrompt();
+
+	if (!wantToInstall) return; // If the user doesn't want to install the dependencies, return
 
 	const { pkgJson, absolutePkgJsonPath } =
 		await CheckPackageJson(absolutePath); // Check the package.json file
@@ -35,7 +37,7 @@ export const initProcess = async ({
 		// Update the package.json file
 		pkgJson,
 		absolutePkgJsonPath,
-		projectName: dirName(projectName),
+		projectName: getProperDirName(projectName),
 	});
 
 	await installDependencies(absolutePath, otherMeta); // Install the dependencies
@@ -46,64 +48,29 @@ const installDependencies = async (
 	otherMeta: Omit<Project, "name">,
 ) => {
 	const framework = otherMeta.framework;
-	// TODO: Find the package manager used in the project
-	const spinner = ora("Installing dependencies...");
-	spinner.start();
+	const { start, fail, succeed } = spinner("Installing dependencies 🚀");
 
 	await tryCatchWrapper(
 		async () => {
+			start();
 			await execAsync("pnpm install", { cwd: path });
-			spinner.succeed("Done.");
-			printBoxText(
-				`Dependencies installed successfully 👌\nHappy coding 🚀\n\n🤖 Start : ${PROJECT_SCRIPT[framework]?.start}\n🔧 Build : ${PROJECT_SCRIPT[framework]?.build}`,
-			);
-
-			const { shouldRun } = await inquirer.prompt([
-				// Ask the user if he wants to run the project
-				{
-					type: "confirm",
-					name: "shouldRun",
-					message: "Do you want to run the project ?",
-				},
+			succeed("Done.");
+			printTextIntoBox([
+				"Dependencies installed successfully 👌\nHappy coding 🚀\n\n",
+				`🤖 Start : ${PROJECT_SCRIPT[framework]?.start}\n`,
+				`🔧 Build : ${PROJECT_SCRIPT[framework]?.build}`,
 			]);
 
-			if (!shouldRun) return; // If the user doesn't want to run the project, return
+			// Ask the user if he wants to run the project
+			const { wantToRunProject } = await wantToRunProjectPrompt();
 
-			runProjectAfterInit({ framework, path });
+			if (!wantToRunProject) return; // If the user doesn't want to run the project, return
+
+			runProject({ framework, path });
 		},
 		() => {
-			spinner.fail("Failed to install dependencies");
+			fail("Failed to install dependencies");
 			return;
 		},
 	);
 };
-
-export const runProjectAfterInit = ({
-	framework,
-	path,
-}: { framework: Project["framework"]; path: string }) => {
-	const spawnProcess = spawn(PROJECT_SCRIPT[framework].start, {
-		shell: true,
-		cwd: path,
-		stdio: "pipe",
-		env: { ...process.env, FORCE_COLOR: "true" }, // Enable colors
-	});
-
-	// For now stop the execution if framework is not next
-	if (framework !== "nextjs") return;
-
-	spawnProcess.stdout.on("data", (data) => {
-		writeSameLine("stdout", data);
-	});
-
-	spawnProcess.stderr?.on("data", (data) => {
-		writeSameLine("stderr", data);
-	});
-};
-
-function writeSameLine(type: "stdout" | "stderr", data: Buffer) {
-	// Format the output
-	const prefix = type === "stdout" ? "🌟 OUTPUT:" : "❌ ERROR:";
-	const newLine = `${prefix} ${data.toString().trim()}\n`;
-	process.stdout.write(newLine);
-}

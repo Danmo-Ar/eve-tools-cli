@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import chalk from "chalk";
+import ora from "ora";
 
 export const errorColor = chalk.bold.red;
 export const pendingColor = chalk.bold.blue;
@@ -11,15 +12,15 @@ export const logger = {
 	},
 
 	default(text: string) {
-		console.log(text);
+		return console.log(text);
 	},
 
 	success(text: string) {
-		console.log(chalk.bold.green(text));
+		return console.log(chalk.bold.green(text));
 	},
 
 	error(text: string) {
-		console.log(chalk.bold.red(text));
+		return console.log(chalk.bold.red(text));
 	},
 
 	pending(text: string) {
@@ -31,9 +32,16 @@ export const logger = {
 	},
 
 	custom(text: string, color: keyof typeof chalk) {
-		console.log((chalk.bold as any)[color](text));
+		return (chalk.bold as any)[color](text);
 	},
 	figlet(text: string) {
 		console.log(chalk.bold.cyanBright(text));
+	},
+	ora(text: string) {
+		return {
+			pending: ora(chalk.bold.blue(text)),
+			fail: ora(chalk.bold.red(text)),
+			succeed: ora(chalk.bold.green(text)),
+		};
 	},
 };

@@ -1,13 +1,17 @@
 import fs from "fs";
 import { Question } from "inquirer";
-import { ARCHITECTURE, FRAMEWORK, LANGUAGE } from "../constants.js";
+import { DyanamicPrompt } from "../interfaces/index.js";
+import { ARCHITECTURE, FRAMEWORK, LANGUAGE } from "./constants.js";
 
 const { APPLICATION, WEBSITE, CRUD, DDD, MVC } = ARCHITECTURE;
 const { ANGULAR, REACT, NEXT, NATIF, EXPRESS, NESTJS, SPRING, FLASK } =
 	FRAMEWORK;
 const { TS, JS, NODE, JAVA, PYTHON } = LANGUAGE;
 
-const promptEn: Record<number | string, Question | Record<string, Question>> = {
+const promptSeries: Record<
+	number | string,
+	Question | Record<string, Question>
+> = {
 	1: [
 		{
 			type: "input",
@@ -20,7 +24,10 @@ const promptEn: Record<number | string, Question | Record<string, Question>> = {
 			validate: (input: string) => {
 				const outDir = input === "." ? process.cwd() : input;
 				// check if folder exist
-				if (fs.existsSync(outDir) && fs.readdirSync(outDir).length > 0) {
+				if (
+					fs.existsSync(outDir) &&
+					fs.readdirSync(outDir).length > 0
+				) {
 					return "The specified folder exist but is not empty";
 				}
 
@@ -106,11 +113,6 @@ const promptEn: Record<number | string, Question | Record<string, Question>> = {
 	},
 };
 
-interface DyanamicPrompt {
-	choices: Array<string | Record<string, string | boolean>>;
-	defaultChoice?: string;
-}
-
 function DynamicPromptArchitecture({ choices, defaultChoice }: DyanamicPrompt) {
 	return {
 		type: "list",
@@ -141,4 +143,4 @@ function DynamicPromptFrameWork({ choices, defaultChoice }: DyanamicPrompt) {
 	};
 }
 
-export default promptEn;
+export default promptSeries;
