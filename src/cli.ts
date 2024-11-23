@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
 import figlet from "figlet";
-import { figletColor } from "./lib/chalk-utility.js";
+import { logger } from "./utils/logger.js";
 
 import { Command } from "commander";
-import projectBuilder from "./helpers/builder.js";
-import { getVersion } from "./helpers/index.js";
-import { generatePrompts } from "./prompt/generate-prompts.js";
+import projectBuilder from "./helpers/project-builder.js";
+import { generatePromptSeries } from "./prompts/index.js";
+import { getEveCliVersion } from "./utils/index.js";
+
 const program = new Command();
 // version
-const version = getVersion();
+const version = getEveCliVersion();
 
 // Setup Cli info
 program
@@ -28,12 +29,10 @@ program
  */
 
 // Display the figlet logo
-console.log(
-	figletColor(
-		figlet.textSync("eve cli", {
-			font: "ANSI Shadow",
-		}),
-	),
+logger.figlet(
+	figlet.textSync("eve cli", {
+		font: "ANSI Shadow",
+	}),
 );
 
 // Remove all listeners to avoid warnings
@@ -43,7 +42,7 @@ program
 	.command("init")
 	.description("Initialize a new project")
 	.action(async () => {
-		const { projectMeta } = await generatePrompts();
+		const { projectMeta } = await generatePromptSeries();
 		await projectBuilder(projectMeta);
 	});
 

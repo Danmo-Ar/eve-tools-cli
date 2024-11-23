@@ -1,7 +1,8 @@
-import ora from "ora";
-import { FRAMEWORK, LANGUAGE } from "../constants.js";
+import { FRAMEWORK, LANGUAGE } from "../constants/constants.js";
 import type { Project } from "../interfaces/index.js";
-import { execAsync, tryCatchWrapper } from "./index.js";
+import { execAsync } from "../utils/promisified.js";
+import { spinner } from "../utils/spinner.js";
+import { tryCatchWrapper } from "../utils/try-catch-wrapper.js";
 
 const { NESTJS, NEXT } = FRAMEWORK;
 const { NODE, TS } = LANGUAGE;
@@ -16,22 +17,20 @@ const templateGithub = new Map()
 		"https://github.com/Danmo-Ar/nextjs-architecture.git",
 	);
 
-const spinner = ora("Clonning the project");
-
 export const clonningProcess = async (project: Project) => {
+	const { start, fail, succeed } = spinner("Clonning the project 🚀");
 	await tryCatchWrapper(
 		async () => {
-			spinner.start();
+			start();
 			await execAsync(
 				`git clone ${templateGithub.get(
 					`${project.language}-${project.framework}`,
 				)} ${project.name}`,
 			);
-			spinner.text = "Project clonned successfully";
-			spinner.succeed();
+			succeed("Project clonned successfully 😄");
 		},
 		() => {
-			spinner.fail();
+			fail("Project clonning failed 😞");
 		},
 	);
 };

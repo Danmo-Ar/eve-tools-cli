@@ -52,5 +52,12 @@
 		"globals": "^15.8.0",
 		"typescript": "^5.0.4",
 		"typescript-eslint": "^7.17.0"
+	},
+	"pnpm": {
+		"overrides": {
+			"semver@>=7.0.0 <7.5.2": ">=7.5.2",
+			"micromatch@<4.0.8": ">=4.0.8",
+			"cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5"
+		}
 	}
 }
