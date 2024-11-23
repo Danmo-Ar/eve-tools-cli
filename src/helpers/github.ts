@@ -1,7 +1,8 @@
 import ora from "ora";
 import { FRAMEWORK, LANGUAGE } from "../constants.js";
 import type { Project } from "../interfaces/index.js";
-import { execAsync, tryCatchWrapper } from "./index.js";
+import { tryCatchWrapper } from "../utils/try-catch-wrapper.js";
+import { execAsync } from "./index.js";
 
 const { NESTJS, NEXT } = FRAMEWORK;
 const { NODE, TS } = LANGUAGE;

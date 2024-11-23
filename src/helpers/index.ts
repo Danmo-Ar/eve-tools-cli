@@ -6,23 +6,10 @@ import { readFile } from "node:fs/promises";
 import path, { normalize } from "node:path";
 import { promisify } from "node:util";
 import ora from "ora";
-import { errorColor, pendingColor } from "../lib/chalk-utility.js";
+import { logger, pendingColor } from "../utils/logger.js";
 
 export type PkgJson = Record<string, string | boolean | number | undefined>;
 export const execAsync = promisify(exec);
-
-export const tryCatchWrapper = async (
-	fn: () => Promise<void>,
-	displayError?: () => void,
-) => {
-	try {
-		await fn();
-	} catch (error) {
-		displayError?.();
-		console.error(errorColor((error as Error)?.message));
-		process.exit(1);
-	}
-};
 
 export const CheckPackageJson = async (cwd: string) => {
 	const spinner = ora(pendingColor("Checking dependencies..."));
@@ -84,7 +71,7 @@ export const getVersion = () => {
 };
 
 export const printBoxText = (text: string, options?: Options) => {
-	console.log(
+	logger.default(
 		boxen(text, {
 			padding: 1,
 			width: 60,

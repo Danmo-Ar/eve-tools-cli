@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import figlet from "figlet";
-import { figletColor } from "./lib/chalk-utility.js";
+import { logger } from "./utils/logger.js";
 
 import { Command } from "commander";
 import projectBuilder from "./helpers/builder.js";
@@ -28,12 +28,10 @@ program
  */
 
 // Display the figlet logo
-console.log(
-	figletColor(
-		figlet.textSync("eve cli", {
-			font: "ANSI Shadow",
-		}),
-	),
+logger.figlet(
+	figlet.textSync("eve cli", {
+		font: "ANSI Shadow",
+	}),
 );
 
 // Remove all listeners to avoid warnings
