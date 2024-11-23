@@ -14,14 +14,7 @@
 		"start": "concurrently 'yarn build'  'nodemon --watch . --exec  npm i -g .'",
 		"prepare": "husky"
 	},
-	"keywords": [
-		"cli",
-		"everest",
-		"boilerplate",
-		"eve",
-		"tools",
-		"nextjs"
-	],
+	"keywords": ["cli", "everest", "boilerplate", "eve", "tools", "nextjs"],
 	"author": "Everest Team",
 	"license": "ISC",
 	"dependencies": {
@@ -41,9 +34,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"files": [
-		"cli"
-	],
+	"files": ["cli"],
 	"devDependencies": {
 		"@commitlint/cli": "^19.6.0",
 		"@commitlint/config-conventional": "^19.6.0",
@@ -57,5 +48,10 @@
 		"husky": "^9.1.7",
 		"typescript": "^5.0.4",
 		"typescript-eslint": "^7.17.0"
+	},
+	"husky": {
+		"hooks”": {
+			"pre-commit": "npx --no-install commitlint --edit $1"
+		}
 	}
 }
