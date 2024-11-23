@@ -1,22 +1,31 @@
 import boxen, { Options } from "boxen";
-import { writeFileSync } from "node:fs";
+import { exec } from "node:child_process";
+
+import { readFileSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path, { normalize } from "node:path";
+import { promisify } from "node:util";
 import ora from "ora";
+import { errorColor, pendingColor } from "../lib/chalk-utility.js";
 
-export const tryCatchWrapper = async (fn: () => Promise<void>) => {
+export type PkgJson = Record<string, string | boolean | number | undefined>;
+export const execAsync = promisify(exec);
+
+export const tryCatchWrapper = async (
+	fn: () => Promise<void>,
+	displayError?: () => void,
+) => {
 	try {
 		await fn();
 	} catch (error) {
-		console.error(error);
+		displayError?.();
+		console.error(errorColor((error as Error)?.message));
 		process.exit(1);
 	}
 };
 
-export type PkgJson = Record<string, string | boolean | number | undefined>;
-
 export const CheckPackageJson = async (cwd: string) => {
-	const spinner = ora("Checking dependencies...");
+	const spinner = ora(pendingColor("Checking dependencies..."));
 
 	let absolutePkgJsonPath = "";
 	let pkgJson: PkgJson = {};
@@ -66,32 +75,8 @@ export const getAbsolutePath = (projectName: string) => {
 	);
 };
 
-// export const pnpmInstall = async () => {
-// 	const os = type() as "Windows_NT" | "Linux" | "Darwin";
-// 	// check if pnpm is installed
-
-// 	exec("pnpm --version", (error) => {
-// 		if (error) {
-// 			if (os !== "Windows_NT") {
-// 				exec(
-// 					"curl -fsSL https://get.pnpm.io/install.sh | sh -",
-// 					(error, stdout, stderr) => {},
-// 				);
-// 				return;
-// 			}
-// 			exec("npm install -g pnpm", (error) => {
-// 				if (error) {
-// 					console.error("Failed to install pnpm, please install it manually.");
-// 					return;
-// 				}
-// 				console.log("pnpm installed successfully");
-// 			});
-// 		}
-// 	});
-// };
-
-export const getVersion = async () => {
-	const pkg = await readFile(
+export const getVersion = () => {
+	const pkg = readFileSync(
 		new URL("../../package.json", import.meta.url),
 		"utf-8",
 	);
@@ -108,10 +93,4 @@ export const printBoxText = (text: string, options?: Options) => {
 			...options,
 		}),
 	);
-};
-
-export const printObj = (obj: Record<string, any>) => {
-	for (const [key, value] of Object.entries(obj)) {
-		console.log(`${key}: ${value}`);
-	}
 };
