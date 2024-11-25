@@ -53,7 +53,7 @@ const installDependencies = async (
 	await tryCatchWrapper(
 		async () => {
 			start();
-			await execAsync("pnpm install", { cwd: path });
+			await execAsync("npm install", { cwd: path });
 			succeed("Done.");
 			printTextIntoBox([
 				"Dependencies installed successfully 👌\nHappy coding 🚀\n\n",
