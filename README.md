@@ -7,7 +7,13 @@ This CLI tool should help us start new projects faster, with prebuilt and precon
 ### Install the CLI tool globally
 
 ```bash
-npm i @eve-tools/cli
+npm i -g @eve-tools/cli
+```
+
+if granted permission issue, try with sudo
+
+```bash
+sudo npm i -g @eve-tools/cli
 ```
 
 ### Verify the installation

@@ -1,59 +1,76 @@
-import inquirer from "inquirer";
-import { exec } from "node:child_process";
-import ora from "ora";
-import { PROJECT_SCRIPT } from "../../constants.js";
-import { Project } from "../../interfaces/Project.js";
+import { PROJECT_SCRIPT } from "../../constants/constants.js";
+import { Project } from "../../interfaces/index.js";
+import {
+	execAsync,
+	getAbsolutePath,
+	getProperDirName,
+	printTextIntoBox,
+	tryCatchWrapper,
+} from "../../utils/index.js";
+import { spinner } from "../../utils/spinner.js";
 import {
 	CheckPackageJson,
-	dirName,
-	getAbsolutePath,
-	printBoxText,
 	updatePackageJson,
-} from "../index.js";
+} from "../manage-package-json/index.js";
 
-export const init = async ({ name: projectName, ...otherMeta }: Project) => {
+import {
+	wantToInstallDepsPrompt,
+	wantToRunProjectPrompt,
+} from "../../prompts/index.js";
+import { runProject } from "../run-project.js";
+
+export const initProcess = async ({
+	name: projectName,
+	...otherMeta
+}: Project) => {
 	// Get the absolute path of the current working directory
 	const absolutePath = getAbsolutePath(projectName);
-	const { shouldInstall } = await inquirer.prompt([
-		{
-			type: "confirm",
-			name: "shouldInstall",
-			message: "Do you want to install dependencies ?",
-		},
-	]); // Ask the user if he wants to install the dependencies
 
-	if (!shouldInstall) return; // If the user doesn't want to install the dependencies, return
+	// Ask the user if he wants to install the dependencies
+	const { wantToInstall } = await wantToInstallDepsPrompt();
 
-	const { pkgJson, absolutePkgJsonPath } = await CheckPackageJson(absolutePath); // Check the package.json file
+	if (!wantToInstall) return; // If the user doesn't want to install the dependencies, return
+
+	const { pkgJson, absolutePkgJsonPath } =
+		await CheckPackageJson(absolutePath); // Check the package.json file
 	await updatePackageJson({
 		// Update the package.json file
 		pkgJson,
 		absolutePkgJsonPath,
-		projectName: dirName(projectName),
+		projectName: getProperDirName(projectName),
 	});
 
-	installDependencies(absolutePath, otherMeta); // Install the dependencies
+	await installDependencies(absolutePath, otherMeta); // Install the dependencies
 };
 
-const installDependencies = (
+const installDependencies = async (
 	path: string,
 	otherMeta: Omit<Project, "name">,
 ) => {
-	const framework = otherMeta.framework as "nestjs" | "next";
-	// TODO: Find the package manager used in the project
-	const spinner = ora("Installing dependencies...");
-	spinner.start();
+	const framework = otherMeta.framework;
+	const { start, fail, succeed } = spinner("Installing dependencies 🚀");
 
-	exec("yarn install", { cwd: path }, (error, stdout, stderr) => {
-		if (error) {
-			spinner.fail("Failed to install dependencies");
-			console.error(`error: ${stderr}`);
+	await tryCatchWrapper(
+		async () => {
+			start();
+			await execAsync("npm install", { cwd: path });
+			succeed("Done.");
+			printTextIntoBox([
+				"Dependencies installed successfully 👌\nHappy coding 🚀\n\n",
+				`🤖 Start : ${PROJECT_SCRIPT[framework]?.start}\n`,
+				`🔧 Build : ${PROJECT_SCRIPT[framework]?.build}`,
+			]);
+
+			// Ask the user if he wants to run the project
+			const { wantToRunProject } = await wantToRunProjectPrompt();
+
+			if (!wantToRunProject) return; // If the user doesn't want to run the project, return
+
+			runProject({ framework, path });
+		},
+		() => {
+			fail("Failed to install dependencies");
 			return;
-		}
-		spinner.succeed("Done.");
-
-		printBoxText(
-			`Dependencies installed successfully 👌\nHappy coding 🚀\n\n🤖 Start : ${PROJECT_SCRIPT[framework].start}\n🔧 Build : ${PROJECT_SCRIPT[framework].build}`,
-		);
-	});
+		},
+	);
 };

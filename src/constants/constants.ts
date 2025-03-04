@@ -1,3 +1,5 @@
+import { Project } from "../interfaces";
+
 export enum ARCHITECTURE {
 	APPLICATION = "application",
 	WEBSITE = "website",
@@ -9,7 +11,7 @@ export enum ARCHITECTURE {
 export enum FRAMEWORK {
 	ANGULAR = "angular",
 	REACT = "react",
-	NEXT = "next",
+	NEXT = "nextjs",
 	NATIF = "natif",
 	EXPRESS = "express",
 	NESTJS = "nestjs",
@@ -26,15 +28,15 @@ export enum LANGUAGE {
 }
 
 export const PROJECT_SCRIPT: Record<
-	"next" | "nestjs",
+	Project["framework"],
 	{ start: string; build: string }
 > = {
-	next: {
-		start: "yarn dev",
-		build: "yarn build",
+	nextjs: {
+		start: "npm run dev",
+		build: "npm run build",
 	},
 	nestjs: {
-		start: "yarn start:dev",
-		build: "yarn build",
+		start: "npm run start:dev",
+		build: "npm run build",
 	},
 };

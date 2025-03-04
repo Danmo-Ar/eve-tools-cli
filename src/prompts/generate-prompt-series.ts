@@ -1,17 +1,17 @@
 import inquirer from "inquirer";
 
-import { Project } from "../interfaces/Project.js";
-import prompt from "./prompt-en.js";
+import prompt from "../constants/prompt-series.js";
+import { Project } from "../interfaces/index.js";
 
-const initialPrompt = {
+const initialPrompt: Project = {
 	name: "",
 	type: "",
 	architecture: "",
 	language: "",
-	framework: "",
+	framework: "nextjs",
 };
 
-export const generatePrompts = async () => {
+export const generatePromptSeries = async () => {
 	const projectMeta: Project = { ...initialPrompt };
 	let projectType = "";
 	const languageMapToProjectType = new Set(["node", "python", "java"]); // In the prompts set the project type switch to (Frontend , Backend)
