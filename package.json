@@ -1,6 +1,6 @@
 {
 	"name": "@eve-tools/cli",
-	"version": "0.3.4",
+	"version": "0.3.9",
 	"description": "Everest cli to speed up project start-up and standardized frontend , backend architecture",
 	"bin": {
 		"eve": "./cli/cli.js"

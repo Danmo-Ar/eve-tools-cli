@@ -2,6 +2,7 @@ import fs from "fs";
 import { Question } from "inquirer";
 import { DyanamicPrompt } from "../interfaces/index.js";
 import { ARCHITECTURE, FRAMEWORK, LANGUAGE } from "./constants.js";
+import { isValidProjectName } from "../utils/is-valid-project-name.js";
 
 const { APPLICATION, WEBSITE, CRUD, DDD, MVC } = ARCHITECTURE;
 const { ANGULAR, REACT, NEXT, NATIF, EXPRESS, NESTJS, SPRING, FLASK } =
@@ -22,6 +23,10 @@ const promptSeries: Record<
 			// TODO : find a better way to do this :  default: { name: 'Current directory if nothing is written', value: '.' },
 			default: ".",
 			validate: (input: string) => {
+				if (input !== "." && !isValidProjectName(input)) {
+					return "Project name should be in lowercase and each word should be separate with '-' ";
+				}
+
 				const outDir = input === "." ? process.cwd() : input;
 				// check if folder exist
 				if (
@@ -37,7 +42,7 @@ const promptSeries: Record<
 		{
 			type: "list",
 			name: "type",
-			message: "What type of project do you want to start 🏗️ : ",
+			message: "What type of project do you want to start 🏗 : ",
 
 			choices: [{ name: "Frontend" }, "Backend"],
 		},
@@ -117,7 +122,7 @@ function DynamicPromptArchitecture({ choices, defaultChoice }: DyanamicPrompt) {
 	return {
 		type: "list",
 		name: "architecture",
-		message: "What kind of project do you want to start 🎛️ : ",
+		message: "What kind of project do you want to start 🎛 : ",
 		choices: choices,
 		default: defaultChoice,
 	};
@@ -137,7 +142,7 @@ function DynamicPromptFrameWork({ choices, defaultChoice }: DyanamicPrompt) {
 	return {
 		type: "list",
 		name: "framework",
-		message: "Choose a framework to start 🛠️ : ",
+		message: "Choose a framework to start 🛠 : ",
 		choices: choices,
 		default: defaultChoice,
 	};
