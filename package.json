@@ -1,63 +1,65 @@
 {
-	"name": "@eve-tools/cli",
-	"version": "0.3.9",
-	"description": "Everest cli to speed up project start-up and standardized frontend , backend architecture",
-	"bin": {
-		"eve": "./cli/cli.js"
-	},
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"type": "module",
-	"scripts": {
-		"build": "tsc --watch && tsc-alias",
-		"start": "concurrently 'yarn build'  'nodemon --watch . --exec  npm i -g .'"
-	},
-	"keywords": [
-		"cli",
-		"everest",
-		"boilerplate",
-		"eve",
-		"tools",
-		"nextjs"
-	],
-	"author": "Everest Team",
-	"license": "ISC",
-	"dependencies": {
-		"boxen": "^8.0.1",
-		"chalk": "^5.3.0",
-		"commander": "^12.1.0",
-		"figlet": "^1.6.0",
-		"inquirer": "^8.2.0",
-		"nodemon": "^2.0.22",
-		"open": "^10.1.0",
-		"ora": "^8.0.1",
-		"ts-node": "^10.9.1",
-		"tsc-alias": "^1.8.10",
-		"validate-npm-package-name": "^5.0.1"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"files": [
-		"cli"
-	],
-	"devDependencies": {
-		"@eslint/js": "^9.8.0",
-		"@types/figlet": "^1.5.6",
-		"@types/inquirer": "^9.0.3",
-		"@types/node": "^18.16.3",
-		"concurrently": "^8.0.1",
-		"eslint": "9.x",
-		"globals": "^15.8.0",
-		"typescript": "^5.0.4",
-		"typescript-eslint": "^7.17.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"semver@>=7.0.0 <7.5.2": ">=7.5.2",
-			"micromatch@<4.0.8": ">=4.0.8",
-			"cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5"
-		}
-	}
+   "name": "@eve-tools/cli",
+   "version": "0.4.0",
+   "description": "Everest cli to speed up project start-up and standardized frontend , backend architecture",
+   "bin": {
+      "eve": "./cli/cli.js"
+   },
+   "engines": {
+      "node": ">=18.0.0"
+   },
+   "type": "module",
+   "scripts": {
+      "build": "tsc --watch && tsc-alias",
+      "start": "concurrently 'pnpm build'  'nodemon --watch . --exec  npm i -g .'"
+   },
+   "keywords": [
+      "cli",
+      "everest",
+      "boilerplate",
+      "eve",
+      "tools",
+      "nextjs"
+   ],
+   "author": "Everest Team",
+   "license": "ISC",
+   "dependencies": {
+      "@types/semver": "^7.7.0",
+      "boxen": "^8.0.1",
+      "chalk": "^5.3.0",
+      "commander": "^12.1.0",
+      "figlet": "^1.6.0",
+      "inquirer": "^8.2.0",
+      "nodemon": "^2.0.22",
+      "open": "^10.1.0",
+      "ora": "^8.0.1",
+      "semver": "^7.7.1",
+      "ts-node": "^10.9.1",
+      "tsc-alias": "^1.8.10",
+      "validate-npm-package-name": "^5.0.1"
+   },
+   "publishConfig": {
+      "access": "public"
+   },
+   "files": [
+      "cli"
+   ],
+   "devDependencies": {
+      "@eslint/js": "^9.8.0",
+      "@types/figlet": "^1.5.6",
+      "@types/inquirer": "^9.0.3",
+      "@types/node": "^18.16.3",
+      "concurrently": "^8.0.1",
+      "eslint": "9.x",
+      "globals": "^15.8.0",
+      "typescript": "^5.0.4",
+      "typescript-eslint": "^7.17.0"
+   },
+   "pnpm": {
+      "overrides": {
+         "semver@>=7.0.0 <7.5.2": ">=7.5.2",
+         "micromatch@<4.0.8": ">=4.0.8",
+         "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5"
+      }
+   }
 }
