@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  semver@>=7.0.0 <7.5.2: '>=7.5.2'
-  micromatch@<4.0.8: '>=4.0.8'
-  cross-spawn@>=7.0.0 <7.0.5: '>=7.0.5'
-
 importers:
 
   .:
@@ -897,6 +892,10 @@ packages:
 
   semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
+
+  semver@7.0.0:
+    resolution: {integrity: sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==}
     hasBin: true
 
   semver@7.7.1:
@@ -1932,6 +1931,8 @@ snapshots:
 
   semver@5.7.2: {}
 
+  semver@7.0.0: {}
+
   semver@7.7.1: {}
 
   shebang-command@2.0.0:
@@ -1946,7 +1947,7 @@ snapshots:
 
   simple-update-notifier@1.1.0:
     dependencies:
-      semver: 7.7.1
+      semver: 7.0.0
 
   slash@3.0.0: {}
 
