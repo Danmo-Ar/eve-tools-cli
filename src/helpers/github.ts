@@ -11,10 +11,7 @@ const { NESTJS, NEXT } = FRAMEWORK;
 const { NODE, TS } = LANGUAGE;
 
 const templateGithub = new Map()
-   .set(
-      `${NODE}-${NESTJS}`,
-      'https://github.com/Akuma225/nestjs-prisma-mono-skeleton.git'
-   )
+   .set(`${NODE}-${NESTJS}`, 'https://github.com/Akuma225/nestjs-prisma-mono-skeleton.git')
    .set(`${TS}-${NEXT}`, 'https://github.com/Danmo-Ar/nextjs-architecture.git');
 
 export const clonningProcess = async (project: Project) => {
@@ -23,9 +20,7 @@ export const clonningProcess = async (project: Project) => {
       async () => {
          start();
          await execAsync(
-            `git clone ${templateGithub.get(
-               `${project.language}-${project.framework}`
-            )} ${project.name}`
+            `git clone -b feat/dashboard-app ${templateGithub.get(`${project.language}-${project.framework}`)} ${project.name}`
          );
          initGit(project.name);
          succeed('Project clonned successfully 😄');
@@ -41,13 +36,7 @@ const initGit = (path: string) => {
    // Remove previous git
 
    execSync(
-      combineShellCommand(
-         'rm -rf .git',
-         'git init',
-         'git checkout -b main',
-         'git add .',
-         "git commit -m 'first initialisation' "
-      ),
+      combineShellCommand('rm -rf .git', 'git init', 'git checkout -b main', 'git add .', "git commit -m 'first initialisation' "),
       { cwd: projectPath }
    );
 };
